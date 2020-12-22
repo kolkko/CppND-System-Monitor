@@ -3,31 +3,73 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "process.h"
+#include "linux_parser.h"
 
 using std::string;
 using std::to_string;
 using std::vector;
 
-// TODO: Return this process's ID
-int Process::Pid() { return 0; }
+// Set this process's ID
+void Process::Pid(int pid) { 
+    pid_ = pid;
+    return;  }
+
+// Set the user (name) that generated this process
+void Process::User(int pid) { 
+    user_ = LinuxParser::User(pid);
+    return; }
+
+// TODO: Set this process's CPU utilization
+void Process::CpuUtilization(int pid) { 
+    cpuutil_ = LinuxParser::CpuUtilization(pid);
+    return; }
+
+// Set this process's memory utilization
+void Process::Ram(int pid) { 
+    int ram = LinuxParser::Ram(pid);
+    ram_ = to_string(ram/1000); //memory utilisation in MB
+    //std::cout << "RAM: " << ram_ << "\n";
+    return; }
+
+// Set the age of this process (in seconds)
+void Process::UpTime(int pid) { 
+    long pidup, systemup;
+    pidup = LinuxParser::UpTime(pid);
+    systemup = LinuxParser::UpTime();
+    //std::cout << "PIDUP: " << pidup << " SYSTEMUP: " << systemup << "\n";
+    uptime_ = systemup - pidup;
+    //std::cout << "uptime_ " << uptime_ << "\n";
+    return; }
+
+// Set the command that generated this process
+void Process::Command(int pid) { 
+    command_ = LinuxParser::Command(pid); 
+    return; }
+
+//Process return functions
+// DONE: Return this process's ID
+int Process::Pid() { 
+    return pid_;  }
+
+// DONE: Return the user (name) that generated this process
+string Process::User() { 
+    return user_; }
 
 // TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+float Process::CpuUtilization() { 
+    return cpuutil_; }
 
-// TODO: Return the command that generated this process
-string Process::Command() { return string(); }
+// DONE: Return this process's memory utilization
+string Process::Ram() { 
+    return ram_; }
 
-// TODO: Return this process's memory utilization
-string Process::Ram() { return string(); }
+// DONE: Return the age of this process (in seconds)
+long int Process::UpTime() { 
+    return uptime_; }
 
-// TODO: Return the user (name) that generated this process
-string Process::User() { return string(); }
-
-// TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return 0; }
-
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
+// DONE: Return the command that generated this process
+string Process::Command() { 
+    return command_; }
